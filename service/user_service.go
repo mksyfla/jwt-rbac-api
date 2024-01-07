@@ -2,15 +2,19 @@ package service
 
 import (
 	"errors"
+	"os"
 	"sayembara/entity/model"
 	"sayembara/entity/request"
 	"sayembara/repository"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService interface {
 	Create(bodyRequest request.UserRegisterRequest) (string, error)
+	Login(bodyRequest request.UserLoginRequest) (string, error)
 }
 
 type userService struct {
@@ -46,4 +50,27 @@ func (s *userService) Create(bodyRequest request.UserRegisterRequest) (string, e
 	id, err := s.userRepository.Create(user)
 
 	return id, err
+}
+
+func (s *userService) Login(bodyRequest request.UserLoginRequest) (string, error) {
+	result, err := s.userRepository.GetUserByEmail(bodyRequest.Email)
+
+	if err != nil {
+		return "", errors.New("email or password wrong")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(result.Password), []byte(bodyRequest.Password))
+
+	if err != nil {
+		return "", errors.New("email or password wrong")
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": result.Id,
+		"exp": time.Now().Add(time.Hour * 24 * 2).Unix(),
+	})
+
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWTSECRET")))
+
+	return tokenString, err
 }

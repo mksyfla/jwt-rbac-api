@@ -30,6 +30,7 @@ func main() {
 	firstVersion := api.Group("v1")
 
 	firstVersion.POST("users", userHandler.Create)
+	firstVersion.POST("login", userHandler.Login)
 
 	router.Run()
 }

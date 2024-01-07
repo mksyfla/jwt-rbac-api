@@ -10,6 +10,7 @@ import (
 type UserRepository interface {
 	Create(user model.UserPassword) (string, error)
 	IsEmailAvailable(email string) bool
+	GetUserByEmail(email string) (model.UserPassword, error)
 }
 
 type userRepository struct {
@@ -58,4 +59,24 @@ func (r *userRepository) IsEmailAvailable(email string) bool {
 	}
 
 	return true
+}
+
+func (r *userRepository) GetUserByEmail(email string) (model.UserPassword, error) {
+	query := "SELECT * FROM users WHERE email = ?"
+	rows, err := r.db.Query(query, email)
+
+	var user model.UserPassword
+	if rows.Next() {
+		err = rows.Scan(
+			&user.Id,
+			&user.Name,
+			&user.Email,
+			&user.Password,
+			&user.Profile,
+			&user.Banner,
+			&user.Category,
+		)
+	}
+
+	return user, err
 }

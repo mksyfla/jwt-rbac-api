@@ -10,7 +10,7 @@ import (
 
 func NewDB() *sql.DB {
 	db, err := sql.Open(
-		"mysql",
+		os.Getenv("dbDriver"),
 		fmt.Sprintf("%s:%s@tcp(127.0.0.1:3306)/%s", os.Getenv("dbUser"), os.Getenv("dbPass"), os.Getenv("dbName")),
 	)
 

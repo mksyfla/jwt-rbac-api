@@ -25,9 +25,7 @@ func NewUserHandler(userService service.UserService) *userHandler {
 func (h *userHandler) Create(c *gin.Context) {
 	var bodyRequest request.UserRegisterRequest
 
-	err := c.BindJSON(&bodyRequest)
-
-	if err != nil {
+	if err := c.BindJSON(&bodyRequest); err != nil {
 		custom_error.ValidationError(c, err)
 		return
 	}
@@ -47,4 +45,25 @@ func (h *userHandler) Create(c *gin.Context) {
 		"message": "user created",
 		"data":    id,
 	})
+}
+
+func (h *userHandler) Login(c *gin.Context) {
+	var bodyRequest request.UserLoginRequest
+
+	if err := c.BindJSON(&bodyRequest); err != nil {
+		custom_error.ValidationError(c, err)
+		return
+	}
+
+	token, err := h.userService.Login(bodyRequest)
+
+	if err != nil {
+		custom_error.BadRequestError(c, err)
+		return
+	}
+
+	c.SetSameSite(http.SameSiteLaxMode)
+	c.SetCookie("Authorization", token, 3600*24*2, "", "", false, true)
+
+	c.JSON(http.StatusOK, gin.H{})
 }
