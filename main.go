@@ -1,8 +1,10 @@
 package main
 
 import (
+	"net/http"
 	"sayembara/db"
 	"sayembara/handler"
+	"sayembara/middleware"
 	"sayembara/repository"
 	"sayembara/service"
 	"sayembara/utils"
@@ -24,6 +26,8 @@ func main() {
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
 
+	middleware := middleware.NewMiddleware(userRepository)
+
 	router := gin.Default()
 
 	api := router.Group("api")
@@ -31,6 +35,11 @@ func main() {
 
 	firstVersion.POST("users", userHandler.Create)
 	firstVersion.POST("login", userHandler.Login)
+	firstVersion.GET("auth", middleware.AuthMiddleware, func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "test auth",
+		})
+	})
 
 	router.Run()
 }

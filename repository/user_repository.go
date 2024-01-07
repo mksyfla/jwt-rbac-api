@@ -11,6 +11,7 @@ type UserRepository interface {
 	Create(user model.UserPassword) (string, error)
 	IsEmailAvailable(email string) bool
 	GetUserByEmail(email string) (model.UserPassword, error)
+	GetUserById(id string) (model.User, error)
 }
 
 type userRepository struct {
@@ -74,6 +75,23 @@ func (r *userRepository) GetUserByEmail(email string) (model.UserPassword, error
 			&user.Password,
 			&user.Profile,
 			&user.Banner,
+			&user.Category,
+		)
+	}
+
+	return user, err
+}
+
+func (r *userRepository) GetUserById(id string) (model.User, error) {
+	query := "SELECT id, name, email, category FROM users WHERE id = ?"
+	rows, err := r.db.Query(query, id)
+
+	var user model.User
+	if rows.Next() {
+		err = rows.Scan(
+			&user.Id,
+			&user.Name,
+			&user.Email,
 			&user.Category,
 		)
 	}
