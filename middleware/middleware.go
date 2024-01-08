@@ -2,9 +2,10 @@ package middleware
 
 import (
 	"fmt"
-	"net/http"
 	"os"
+	"sayembara/entity/model"
 	"sayembara/repository"
+	"sayembara/utils/custom_error"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -23,7 +24,7 @@ func (m *middleware) AuthMiddleware(c *gin.Context) {
 	tokenString, err := c.Cookie("Authorization")
 
 	if err != nil {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		custom_error.UnauthorizedError(c)
 		return
 	}
 
@@ -36,21 +37,21 @@ func (m *middleware) AuthMiddleware(c *gin.Context) {
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
 		if float64(time.Now().Unix()) > claims["exp"].(float64) {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			custom_error.UnauthorizedError(c)
 			return
 		}
 
 		sub, ok := claims["sub"].(string)
 
 		if !ok {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			custom_error.UnauthorizedError(c)
 			return
 		}
 
 		user, _ := m.repository.GetUserById(sub)
-		fmt.Println(user)
+
 		if user.Id == "" {
-			c.AbortWithStatus(http.StatusUnauthorized)
+			custom_error.UnauthorizedError(c)
 			return
 		}
 
@@ -58,7 +59,28 @@ func (m *middleware) AuthMiddleware(c *gin.Context) {
 
 		c.Next()
 	} else {
-		c.AbortWithStatus(http.StatusUnauthorized)
+		custom_error.UnauthorizedError(c)
 		return
+	}
+}
+
+func (m *middleware) RoleBasedMiddleware(roles string) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		user, err := c.Get("user")
+
+		if !err {
+			custom_error.UnauthorizedError(c)
+			return
+		}
+
+		category := user.(model.User).Category
+
+		println(category)
+		if category == roles {
+			c.Next()
+			return
+		}
+
+		custom_error.ForbiddenError(c)
 	}
 }

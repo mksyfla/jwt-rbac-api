@@ -1,9 +1,12 @@
 package utils
 
-import "math/rand"
+import (
+	"math/rand"
+	"strconv"
+)
 
 type IdGenerator func() string
 
 func NewIdGenerator() string {
-	return string(rand.Uint32())
+	return strconv.Itoa(int(rand.Uint32()))
 }

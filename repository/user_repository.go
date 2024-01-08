@@ -12,6 +12,7 @@ type UserRepository interface {
 	IsEmailAvailable(email string) bool
 	GetUserByEmail(email string) (model.UserPassword, error)
 	GetUserById(id string) (model.User, error)
+	GetUsers() ([]model.User, error)
 }
 
 type userRepository struct {
@@ -83,7 +84,7 @@ func (r *userRepository) GetUserByEmail(email string) (model.UserPassword, error
 }
 
 func (r *userRepository) GetUserById(id string) (model.User, error) {
-	query := "SELECT id, name, email, category FROM users WHERE id = ?"
+	query := "SELECT id, name, email, profile, banner, category FROM users WHERE id = ?"
 	rows, err := r.db.Query(query, id)
 
 	var user model.User
@@ -92,9 +93,30 @@ func (r *userRepository) GetUserById(id string) (model.User, error) {
 			&user.Id,
 			&user.Name,
 			&user.Email,
+			&user.Profile,
+			&user.Banner,
 			&user.Category,
 		)
 	}
 
 	return user, err
+}
+
+func (r *userRepository) GetUsers() ([]model.User, error) {
+	query := "SELECT id, name, category FROM users"
+	rows, err := r.db.Query(query)
+
+	var users []model.User
+
+	for rows.Next() {
+		var user model.User
+		rows.Scan(
+			&user.Id,
+			&user.Name,
+			&user.Category,
+		)
+		users = append(users, user)
+	}
+
+	return users, err
 }

@@ -6,5 +6,5 @@ CREATE TABLE users
   password VARCHAR(255) NOT NULL,
   profile VARCHAR(255) NOT NULL,
   banner VARCHAR(255) NOT NULL,
-  category VARCHAR(255) NOT NULL
+  category VARCHAR(255)
 )

@@ -2,14 +2,16 @@
 
 ## register User API
 
+done
+
 Endpoint : POST /api/v1/users
 
 Body Request :
 ```
-nama: string, required
+name: string, required
 email: string, required
 password: string, required
-category: string, required (UMKM | MAHASISWA)
+category: string, required (UMKM | MAHASISWA | LAINNYA)
 ```
 
 Reponse :
@@ -40,6 +42,9 @@ HTTP Response 400
 ```
 
 ## Login User API
+
+done
+
 Endpoint : POST /api/v1/login
 
 Body Request :
@@ -49,12 +54,11 @@ password: string, required
 ```
 
 Reponse :
+Cookie Authorization
 ```
 HTTP Response 201
 {
-  "data": {
-    "token": token
-  }
+  "message": "loged in"
 }
 ```
 
@@ -67,6 +71,8 @@ HTTP Response 400
 ```
 
 ## Get User API
+don\'t know how to serving the image 
+
 Endpoint: GET /api/v1/users/{id}
 
 Response :
@@ -74,21 +80,21 @@ Response :
 ```
 HTTP Response 200
 {
-  nama: string
-  email: string
-  verified: boolean
-  banner: string
-  profile: string
-  jobs: [
+  "name": string
+  "email": string
+  "verified": boolean
+  "banner": string
+  "profile": string
+  "jobs": [
     {
-      title: string
-      description: string
-      image: string
+      "title": string
+      "description": string
+      "image": string
     },
     {
-      title: string
-      description: string
-      image: string
+      "title": string
+      "description": string
+      "image": string
     }
   ]
 }
@@ -97,27 +103,29 @@ HTTP Response 200
 ```
 HTTP Response 200
 {
-  nama: string
-  email: string
-  badge: boolean
-  banner: string
-  profile: string
-  jobs_reuslt: [
+  "name": string
+  "email": string
+  "badge": boolean
+  "banner": string
+  "profile": string
+  "jobs_result": [
     {
-      title: string
-      description: string
-      image: string
+      "title": string
+      "description": string
+      "image": string
     },
     {
-      title: string
-      description: string
-      image: string
+      "title": string
+      "description": string
+      "image": string
     }
   ]
 }
 ```
 
 ## Update User API
+
+not yet
 
 Endpoint : PUT /api/v1/users/{id}
 
@@ -126,7 +134,7 @@ Headers:
 
 Body Request :
 ```
-nama: string, required
+name: string, required
 email: string, required
 password: string, required
 posisi: string, required
@@ -155,5 +163,60 @@ HTTP Response 404
 HTTP Response 400
 {
   "message": "field is empty"
+}
+```
+
+## Get Users API
+
+don\'t know how to serving the image
+
+Endpoint: GET /api/v1/users/
+
+Response :
+```
+HTTP Response 200
+{
+  "data": [
+    {
+      "name": string
+      "category": string
+      "profile": string
+    },
+    {
+      "name": string
+      "category": string
+      "profile": string
+    }
+  ]
+}
+```
+
+## Post a Request to get Verified
+
+Endpoint: POST /api/v1/users/{id}/verified
+
+Headers:
+- Authorization: token
+
+Response :
+```
+HTTP Response 200
+{
+  "message": "request uploaded"
+}
+```
+
+## Post a Request to get Expert Badge
+
+Endpoint: POST /api/v1/users/{id}/expert
+
+Headers:
+- Authorization: token
+
+Response :
+```
+HTTP Response 200
+{
+  "message": "request uploaded"
 }
 ```

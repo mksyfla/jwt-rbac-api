@@ -3,8 +3,11 @@ package service
 import (
 	"errors"
 	"os"
+	"path/filepath"
+	"sayembara/entity/mapping"
 	"sayembara/entity/model"
 	"sayembara/entity/request"
+	"sayembara/entity/response"
 	"sayembara/repository"
 	"time"
 
@@ -15,6 +18,7 @@ import (
 type UserService interface {
 	Create(bodyRequest request.UserRegisterRequest) (string, error)
 	Login(bodyRequest request.UserLoginRequest) (string, error)
+	GetUsers() ([]response.GetUsers, error)
 }
 
 type userService struct {
@@ -36,12 +40,14 @@ func (s *userService) Create(bodyRequest request.UserRegisterRequest) (string, e
 		return "", errors.New("email is used")
 	}
 
+	imageUrl := filepath.Join("public", "image", "profile", "default-profile.jpg")
+
 	user := model.UserPassword{
 		User: model.User{
-			Name:     bodyRequest.Nama,
+			Name:     bodyRequest.Name,
 			Email:    bodyRequest.Email,
-			Banner:   "",
-			Profile:  "",
+			Banner:   imageUrl,
+			Profile:  imageUrl,
 			Category: bodyRequest.Category,
 		},
 		Password: string(password),
@@ -73,4 +79,16 @@ func (s *userService) Login(bodyRequest request.UserLoginRequest) (string, error
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWTSECRET")))
 
 	return tokenString, err
+}
+
+func (s *userService) GetUsers() ([]response.GetUsers, error) {
+	users, err := s.userRepository.GetUsers()
+
+	var usersMap []response.GetUsers
+
+	for _, user := range users {
+		userMap := mapping.UsersMap(user)
+		usersMap = append(usersMap, userMap)
+	}
+	return usersMap, err
 }
