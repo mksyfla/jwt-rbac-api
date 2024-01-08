@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"os"
-	"path/filepath"
 	"sayembara/entity/mapping"
 	"sayembara/entity/model"
 	"sayembara/entity/request"
@@ -40,7 +39,7 @@ func (s *userService) Create(bodyRequest request.UserRegisterRequest) (string, e
 		return "", errors.New("email is used")
 	}
 
-	imageUrl := filepath.Join("public", "image", "profile", "default-profile.jpg")
+	imageUrl := "public/image/profile/default-profile.jpg"
 
 	user := model.UserPassword{
 		User: model.User{

@@ -103,7 +103,7 @@ func (r *userRepository) GetUserById(id string) (model.User, error) {
 }
 
 func (r *userRepository) GetUsers() ([]model.User, error) {
-	query := "SELECT id, name, category FROM users"
+	query := "SELECT id, name, category, profile, banner FROM users"
 	rows, err := r.db.Query(query)
 
 	var users []model.User
@@ -114,6 +114,8 @@ func (r *userRepository) GetUsers() ([]model.User, error) {
 			&user.Id,
 			&user.Name,
 			&user.Category,
+			&user.Banner,
+			&user.Profile,
 		)
 		users = append(users, user)
 	}

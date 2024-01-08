@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"sayembara/entity/model"
 	"sayembara/entity/request"
 	"sayembara/entity/response"
 	"sayembara/service"
@@ -72,6 +73,19 @@ func (h *userHandler) Login(c *gin.Context) {
 
 func (h *userHandler) GetUsers(c *gin.Context) {
 	users, _ := h.userService.GetUsers()
+
+	if len(users) == 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"data": []model.User{},
+		})
+		return
+	}
+
+	baseURL := "http://127.0.0.1:8080"
+	for i := range users {
+		users[i].Banner = baseURL + "/" + users[i].Banner
+		users[i].Profile = baseURL + "/" + users[i].Profile
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": users,

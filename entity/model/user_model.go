@@ -23,3 +23,9 @@ type Mahasiswa struct {
 	User
 	Badge bool
 }
+
+type EmailPassword struct {
+	Id       string
+	Email    string
+	Password string
+}

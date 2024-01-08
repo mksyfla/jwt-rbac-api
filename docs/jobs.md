@@ -14,7 +14,8 @@ title: string, reqiured
 description: string, required
 deadline: time/date?, required
 reward: string
-tags: array?
+tags: array/slice?, required
+image: [3]array, required
 draft: boolean, required (false)
 ```
 
@@ -47,12 +48,13 @@ Headers:
 
 Body Request :
 ```
-title: string
+title: string, reqiured
 description: string
 deadline: time/date?
 reward: string
-tags: array?
-draft: boolean (true)
+tags: array/slice?
+image: [3]array
+draft: boolean, required (true)
 ```
 
 Response :

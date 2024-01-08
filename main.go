@@ -50,15 +50,15 @@ func main() {
 	// 	c.File(filepath.Join("uploads/1.png"))
 	// })
 
+	router.Static("/public", "./public")
+
 	api := router.Group("api")
-	firstVersion := api.Group("v1")
+	v1 := api.Group("v1")
 
-	// user auth
-	firstVersion.POST("users", userHandler.Create)
-	firstVersion.POST("login", userHandler.Login)
+	v1.POST("users", userHandler.Create)
+	v1.POST("login", userHandler.Login)
 
-	// users public
-	firstVersion.GET("users", userHandler.GetUsers)
+	v1.GET("users", userHandler.GetUsers)
 
 	router.Run()
 }
