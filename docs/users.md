@@ -1,17 +1,15 @@
 # Users API Spec
 
-## register User API
-
-done
+## register User API (Done)
 
 Endpoint : POST /api/v1/users
 
 Body Request :
 ```
-name: string, required
-email: string, required
-password: string, required
-category: string, required (UMKM | MAHASISWA | LAINNYA)
+name: string
+email: string
+password: string
+category: string (UMKM | MAHASISWA | LAINNYA)
 ```
 
 Reponse :
@@ -20,7 +18,7 @@ HTTP Response 201
 {
   "message": "user created"
   "data": {
-    "id": "user_id" 
+    "user_id": string
   }
 }
 ```
@@ -41,105 +39,23 @@ HTTP Response 400
 }
 ```
 
-## Login User API
-
-done
-
-Endpoint : POST /api/v1/login
-
-Body Request :
-```
-email: string, required
-password: string, required
-```
-
-Reponse :
-Cookie Authorization
-```
-HTTP Response 201
-{
-  "message": "login success"
-}
-```
-
-Response Body Error :
-```
-HTTP Response 400
-{
-  "message": "email or password wrong"
-}
-```
-
-## Get User API
-don\'t know how to serving the image 
-
-Endpoint: GET /api/v1/users/{id}
-
-Response :
-- UMKM :
-```
-HTTP Response 200
-{
-  "name": string
-  "email": string
-  "verified": boolean
-  "banner": string
-  "profile": string
-  "jobs": [
-    {
-      "title": string
-      "description": string
-      "image": string
-    },
-    {
-      "title": string
-      "description": string
-      "image": string
-    }
-  ]
-}
-```
-- MAHASISWA :
-```
-HTTP Response 200
-{
-  "name": string
-  "email": string
-  "badge": boolean
-  "banner": string
-  "profile": string
-  "jobs_result": [
-    {
-      "title": string
-      "description": string
-      "image": string
-    },
-    {
-      "title": string
-      "description": string
-      "image": string
-    }
-  ]
-}
-```
-
 ## Update User API
 
 not yet
 
-Endpoint : PUT /api/v1/users/{id}
+Endpoint : PUT /api/v1/users/:job_id
 
 Headers:
 - Authorization: token
 
 Body Request :
 ```
-name: string, required
-email: string, required
-password: string, required
-skills: string, required
-profile: file, required
-banner: file, required
+name: string
+email: string
+password: string
+skills: string
+profile: file (base64, jpg)
+banner: file (base64, jpg)
 ```
 
 Reponse :
@@ -166,6 +82,35 @@ HTTP Response 400
 }
 ```
 
+## Login User API (Done)
+
+done
+
+Endpoint : POST /api/v1/login
+
+Body Request :
+```
+email: string
+password: string
+```
+
+Reponse :
+Cookie Authorization
+```
+HTTP Response 201
+{
+  "message": "login success"
+}
+```
+
+Response Body Error :
+```
+HTTP Response 400
+{
+  "message": "email or password wrong"
+}
+```
+
 ## Get Users API
 
 done
@@ -180,20 +125,77 @@ HTTP Response 200
     {
       "name": string
       "category": string
-      "profile": string
+      "profile": string (image url)
     },
     {
       "name": string
       "category": string
-      "profile": string
+      "profile": string (image url)
     }
   ]
 }
 ```
 
+## Get User Details API
+don\'t know how to serving the image 
+
+Endpoint: GET /api/v1/users/:job_id
+
+Response :
+- UMKM :
+```
+HTTP Response 200
+{
+  "user_id": string
+  "user_name": string
+  "user_email": string
+  "user_verified": boolean
+  "user_banner": string (image url)
+  "user_profile": string (image url)
+  "user_jobs": [
+    {
+      "job_id": string
+      "job_title": string
+      "job_description": string
+      "job_image": string (image url)
+    },
+    {
+      "job_id": string
+      "job_title": string
+      "job_description": string
+      "job_image": string (image url)
+    }
+  ]
+}
+```
+- MAHASISWA :
+```
+HTTP Response 200
+{
+  "name": string
+  "email": string
+  "badge": boolean
+  "banner": string (image url)
+  "profile": string (image url)
+  "result": [
+    {
+      "title": string
+      "description": string
+      "image": string (image url)
+    },
+    {
+      "title": string
+      "description": string
+      "image": string (image url)
+    }
+  ]
+}
+```
+
+
 ## Post a Request to get Verified
 
-Endpoint: POST /api/v1/users/{id}/verified
+Endpoint: POST /api/v1/users/:job_id/verified
 
 Headers:
 - Authorization: token
@@ -208,7 +210,7 @@ HTTP Response 200
 
 ## Post a Request to get Expert Badge
 
-Endpoint: POST /api/v1/users/{id}/expert
+Endpoint: POST /api/v1/users/:job_id/expert
 
 Headers:
 - Authorization: token

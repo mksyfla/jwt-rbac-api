@@ -47,6 +47,7 @@ func main() {
 	v1.GET("users", userHandler.GetUsers)
 
 	v1.POST("jobs", middleware.AuthMiddleware, middleware.RoleBasedMiddleware("UMKM"), jobHandler.Create)
+	v1.POST("draft", middleware.AuthMiddleware, middleware.RoleBasedMiddleware("UMKM"), jobHandler.Draft)
 
 	router.Run()
 }

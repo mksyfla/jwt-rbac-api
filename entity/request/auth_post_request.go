@@ -6,3 +6,8 @@ type UserRegisterRequest struct {
 	Password string `json:"password" binding:"required"`
 	Category string `json:"category" binding:"required"`
 }
+
+type UserLoginRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}

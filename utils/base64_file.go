@@ -10,15 +10,19 @@ import (
 	"time"
 )
 
-func Base64ToJpg(image string) (string, error) {
+func Base64ToFile(filetype string, image string) (string, error) {
 	decodedData, err := base64.StdEncoding.DecodeString(image)
 	if err != nil {
 		return "", err
 	}
 
-	uploadDir := "public/image"
+	uploadDir := fmt.Sprintf("public/%s", filetype)
 
-	randomFilename := generateRandomFilename("jpg")
+	if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
+		os.MkdirAll(uploadDir, 0755)
+	}
+
+	randomFilename := generateRandomFilename(filetype)
 	filename := filepath.Join(uploadDir, randomFilename)
 
 	err = os.WriteFile(filename, decodedData, 0644)

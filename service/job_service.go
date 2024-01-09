@@ -8,6 +8,7 @@ import (
 
 type JobService interface {
 	Create(userId string, job request.JobPostRequest) (string, error)
+	Draft(userId string, job request.DraftPostRequest) (string, error)
 }
 
 type jobService struct {
@@ -19,6 +20,22 @@ func NewJobService(jobRepository repository.JobRepository) *jobService {
 }
 
 func (s *jobService) Create(userId string, job request.JobPostRequest) (string, error) {
+	jobMap := model.Job{
+		Title:       job.Title,
+		Description: job.Description,
+		Deadline:    job.Deadline,
+		Reward:      job.Reward,
+		Tag:         job.Tag,
+		Image:       job.Image,
+		Draft:       false,
+	}
+
+	id, err := s.jobRepository.Create(userId, jobMap)
+
+	return id, err
+}
+
+func (s *jobService) Draft(userId string, job request.DraftPostRequest) (string, error) {
 	jobMap := model.Job{
 		Title:       job.Title,
 		Description: job.Description,

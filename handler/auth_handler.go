@@ -38,7 +38,7 @@ func (h *authHandler) Create(c *gin.Context) {
 		return
 	}
 
-	id := response.UserRegisterResponse{
+	id := response.PostResponse{
 		Id: result,
 	}
 
@@ -64,7 +64,7 @@ func (h *authHandler) Login(c *gin.Context) {
 	}
 
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("Authorization", token, 3600, "", "", false, true)
+	c.SetCookie("Authorization", token, 3600*24*2, "", "", false, true)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "login success",

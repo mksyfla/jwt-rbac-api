@@ -1,5 +1,5 @@
 package response
 
-type UserRegisterResponse struct {
+type PostResponse struct {
 	Id string `json:"id"`
 }

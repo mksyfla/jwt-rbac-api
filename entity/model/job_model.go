@@ -10,7 +10,3 @@ type Job struct {
 	Image       []string
 	Draft       bool
 }
-
-type JobFile struct {
-	Image string
-}
