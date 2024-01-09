@@ -4,9 +4,12 @@ CREATE TABLE jobs
   id_user VARCHAR(255) NOT NULL,
   title VARCHAR(255),
   description TEXT,
-  end_time TIME,
+  tags VARCHAR(255),
+  deadline BIGINT,
   reward VARCHAR(255),
   draft BOOLEAN NOT NULL DEFAULT (true),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   
   FOREIGN KEY (id_user) REFERENCES users (id)
 )

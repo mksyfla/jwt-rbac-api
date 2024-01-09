@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"errors"
 	"sayembara/entity/model"
 	"sayembara/utils"
 )
@@ -10,7 +9,7 @@ import (
 type UserRepository interface {
 	Create(user model.UserPassword) (string, error)
 	IsEmailAvailable(email string) bool
-	GetUserByEmail(email string) (model.UserPassword, error)
+	GetUserByEmail(email string) (model.EmailPassword, error)
 	GetUserById(id string) (model.User, error)
 	GetUsers() ([]model.User, error)
 }
@@ -25,28 +24,20 @@ func NewUserRepository(idGenerator utils.IdGenerator, db *sql.DB) *userRepositor
 }
 
 func (r *userRepository) Create(user model.UserPassword) (string, error) {
-	var id string
-	var query string
-	var err error
+	id := r.idGenerator()
+	query := "INSERT INTO users(id, name, email, password, profile, banner, category) VALUES (?, ?, ?, ?, ?, ?, ?)"
+	_, err := r.db.Exec(query, id, user.Name, user.Email, user.Password, user.Profile, user.Banner, user.Category)
 
 	if user.Category == "UMKM" {
-		id = r.idGenerator()
-		query = "INSERT INTO users(id, name, email, password, profile, banner, category) VALUES (?, ?, ?, ?, ?, ?, ?)"
-		_, err = r.db.Exec(query, id, user.Name, user.Email, user.Password, user.Profile, user.Banner, user.Category)
-
 		roleId := r.idGenerator()
 		query = "INSERT INTO umkm(id, id_user, verified) VALUES (?, ?, ?)"
 		_, err = r.db.Exec(query, roleId, id, false)
-	} else if user.Category == "MAHASISWA" {
-		id = r.idGenerator()
-		query = "INSERT INTO users(id, name, email, password, profile, banner, category) VALUES (?, ?, ?, ?, ?, ?, ?)"
-		_, err = r.db.Exec(query, id, user.Name, user.Email, user.Password, user.Profile, user.Banner, user.Category)
+	}
 
+	if user.Category == "MAHASISWA" {
 		roleId := r.idGenerator()
 		query = "INSERT INTO mahasiswa(id, id_user, expert) VALUES (?, ?, ?)"
 		_, err = r.db.Exec(query, roleId, id, false)
-	} else {
-		return id, errors.New("category is wrong")
 	}
 
 	return id, err
@@ -63,19 +54,16 @@ func (r *userRepository) IsEmailAvailable(email string) bool {
 	return true
 }
 
-func (r *userRepository) GetUserByEmail(email string) (model.UserPassword, error) {
-	query := "SELECT * FROM users WHERE email = ?"
+func (r *userRepository) GetUserByEmail(email string) (model.EmailPassword, error) {
+	query := "SELECT id, email, password, category FROM users WHERE email = ?"
 	rows, err := r.db.Query(query, email)
 
-	var user model.UserPassword
+	var user model.EmailPassword
 	if rows.Next() {
 		err = rows.Scan(
 			&user.Id,
-			&user.Name,
 			&user.Email,
 			&user.Password,
-			&user.Profile,
-			&user.Banner,
 			&user.Category,
 		)
 	}
@@ -103,7 +91,7 @@ func (r *userRepository) GetUserById(id string) (model.User, error) {
 }
 
 func (r *userRepository) GetUsers() ([]model.User, error) {
-	query := "SELECT id, name, category, profile, banner FROM users"
+	query := "SELECT id, name, profile, category FROM users"
 	rows, err := r.db.Query(query)
 
 	var users []model.User
@@ -113,9 +101,8 @@ func (r *userRepository) GetUsers() ([]model.User, error) {
 		rows.Scan(
 			&user.Id,
 			&user.Name,
-			&user.Category,
-			&user.Banner,
 			&user.Profile,
+			&user.Category,
 		)
 		users = append(users, user)
 	}

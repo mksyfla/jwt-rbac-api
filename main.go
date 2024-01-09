@@ -3,6 +3,7 @@ package main
 import (
 	"sayembara/db"
 	"sayembara/handler"
+	"sayembara/middleware"
 	"sayembara/repository"
 	"sayembara/service"
 	"sayembara/utils"
@@ -21,44 +22,31 @@ func main() {
 	id := utils.NewIdGenerator
 
 	userRepository := repository.NewUserRepository(id, db)
+	jobRepository := repository.NewJobRepository(id, db)
+
+	authService := service.NewAuthService(userRepository)
 	userService := service.NewUserService(userRepository)
+	jobService := service.NewJobService(jobRepository)
+
+	authHandler := handler.NewAuthHandler(authService)
 	userHandler := handler.NewUserHandler(userService)
+	jobHandler := handler.NewJobHandler(jobService)
+
+	middleware := middleware.NewMiddleware(userRepository)
 
 	router := gin.Default()
-
-	// router.POST("/upload", func(c *gin.Context) {
-	// 	file, err := c.FormFile("image")
-	// 	if err != nil {
-	// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 		return
-	// 	}
-	// 	uploadDir := "public"
-	// 	if err := os.MkdirAll(uploadDir, os.ModePerm); err != nil {
-	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	// 		return
-	// 	}
-	// 	filename := filepath.Join(uploadDir, file.Filename)
-	// 	fmt.Println(filename)
-	// 	if err := c.SaveUploadedFile(file, filename); err != nil {
-	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-	// 		return
-	// 	}
-	// 	c.JSON(http.StatusOK, gin.H{"message": "Image uploaded successfully"})
-	// })
-
-	// router.GET("/upload", func(c *gin.Context) {
-	// 	c.File(filepath.Join("uploads/1.png"))
-	// })
 
 	router.Static("/public", "./public")
 
 	api := router.Group("api")
 	v1 := api.Group("v1")
 
-	v1.POST("users", userHandler.Create)
-	v1.POST("login", userHandler.Login)
+	v1.POST("users", authHandler.Create)
+	v1.POST("login", authHandler.Login)
 
 	v1.GET("users", userHandler.GetUsers)
+
+	v1.POST("jobs", middleware.AuthMiddleware, middleware.RoleBasedMiddleware("UMKM"), jobHandler.Create)
 
 	router.Run()
 }

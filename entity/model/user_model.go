@@ -28,4 +28,5 @@ type EmailPassword struct {
 	Id       string
 	Email    string
 	Password string
+	Category string
 }

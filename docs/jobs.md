@@ -12,11 +12,10 @@ Body Request :
 ```
 title: string, reqiured
 description: string, required
-deadline: time/date?, required
+deadline: int, required, (epoch)
 reward: string
-tags: array/slice?, required
-image: [3]array, required
-draft: boolean, required (false)
+tag: string, required
+image: []string, required (base64, jpg)
 ```
 
 Response :
@@ -48,7 +47,7 @@ Headers:
 
 Body Request :
 ```
-title: string, reqiured
+title: string
 description: string
 deadline: time/date?
 reward: string

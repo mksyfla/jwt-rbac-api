@@ -10,7 +10,6 @@ func UsersMap(user model.User) response.GetUsers {
 		Id:       user.Id,
 		Name:     user.Name,
 		Category: user.Category,
-		Banner:   user.Banner,
 		Profile:  user.Profile,
 	}
 }

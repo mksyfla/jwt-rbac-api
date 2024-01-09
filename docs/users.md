@@ -58,7 +58,7 @@ Cookie Authorization
 ```
 HTTP Response 201
 {
-  "message": "loged in"
+  "message": "login success"
 }
 ```
 
@@ -137,7 +137,7 @@ Body Request :
 name: string, required
 email: string, required
 password: string, required
-posisi: string, required
+skills: string, required
 profile: file, required
 banner: file, required
 ```
@@ -168,7 +168,7 @@ HTTP Response 400
 
 ## Get Users API
 
-don\'t know how to serving the image
+done
 
 Endpoint: GET /api/v1/users/
 
