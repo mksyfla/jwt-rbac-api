@@ -15,6 +15,24 @@ SELECT * FROM users;
 SELECT * FROM jobs;
 SELECT * FROM job_files;
 
+SELECT DISTINCT
+  jobs.id,
+  jobs.title,
+  jobs.description,
+  job_files.file,
+  users.name AS username
+FROM
+  jobs
+INNER JOIN
+  users ON jobs.id_user = users.id
+LEFT JOIN
+  job_files ON jobs.id = job_files.id_job
+WHERE
+  jobs.draft = 0
+
+SELECT DISTINCT  from job_files;
+
+
 TRUNCATE TABLE users;
 TRUNCATE TABLE umkm;
 TRUNCATE TABLE mahasiswa;

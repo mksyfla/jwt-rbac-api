@@ -10,3 +10,8 @@ type Job struct {
 	Image       []string
 	Draft       bool
 }
+
+type JobUser struct {
+	Job
+	Username string
+}

@@ -61,10 +61,7 @@ func (r *userRepository) GetUserByEmail(email string) (model.EmailPassword, erro
 	var user model.EmailPassword
 	if rows.Next() {
 		err = rows.Scan(
-			&user.Id,
-			&user.Email,
-			&user.Password,
-			&user.Category,
+			&user.Id, &user.Email, &user.Password, &user.Category,
 		)
 	}
 
@@ -78,12 +75,7 @@ func (r *userRepository) GetUserById(id string) (model.User, error) {
 	var user model.User
 	if rows.Next() {
 		err = rows.Scan(
-			&user.Id,
-			&user.Name,
-			&user.Email,
-			&user.Profile,
-			&user.Banner,
-			&user.Category,
+			&user.Id, &user.Name, &user.Email, &user.Profile, &user.Banner, &user.Category,
 		)
 	}
 
@@ -99,10 +91,7 @@ func (r *userRepository) GetUsers() ([]model.User, error) {
 	for rows.Next() {
 		var user model.User
 		rows.Scan(
-			&user.Id,
-			&user.Name,
-			&user.Profile,
-			&user.Category,
+			&user.Id, &user.Name, &user.Profile, &user.Category,
 		)
 		users = append(users, user)
 	}

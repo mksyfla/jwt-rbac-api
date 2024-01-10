@@ -273,7 +273,7 @@ HTTP Response 200
       "job_picture": string (image url)
       "user_name": string
     }
-  ]
+  ],
 }
 ``` 
 

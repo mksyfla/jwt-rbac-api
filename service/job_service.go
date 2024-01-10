@@ -9,6 +9,7 @@ import (
 type JobService interface {
 	Create(userId string, job request.JobPostRequest) (string, error)
 	Draft(userId string, job request.DraftPostRequest) (string, error)
+	GetJobs() ([]model.JobUser, error)
 }
 
 type jobService struct {
@@ -43,10 +44,16 @@ func (s *jobService) Draft(userId string, job request.DraftPostRequest) (string,
 		Reward:      job.Reward,
 		Tag:         job.Tag,
 		Image:       job.Image,
-		Draft:       false,
+		Draft:       true,
 	}
 
 	id, err := s.jobRepository.Create(userId, jobMap)
 
 	return id, err
+}
+
+func (s *jobService) GetJobs() ([]model.JobUser, error) {
+	jobs, err := s.jobRepository.GetJobs()
+
+	return jobs, err
 }

@@ -14,6 +14,8 @@ import (
 
 type JobHandler interface {
 	Create(c *gin.Context)
+	Draft(c *gin.Context)
+	GetJobs(c *gin.Context)
 }
 
 type jobHandler struct {
@@ -102,4 +104,17 @@ func (h *jobHandler) Draft(c *gin.Context) {
 		"message": "draft created",
 		"data":    id,
 	})
+}
+
+func (h *jobHandler) GetJobs(c *gin.Context) {
+	jobs, _ := h.jobService.GetJobs()
+
+	if len(jobs) == 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"data": []model.JobUser{},
+		})
+		return
+	}
+
+	// jobMapped := []response.GetJobs{}
 }

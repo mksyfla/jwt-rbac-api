@@ -8,6 +8,7 @@ import (
 
 type JobRepository interface {
 	Create(userId string, job model.Job) (string, error)
+	GetJobs() ([]model.JobUser, error)
 }
 
 type jobRepository struct {
@@ -39,4 +40,37 @@ func (r *jobRepository) Create(userId string, job model.Job) (string, error) {
 	}
 
 	return id, err
+}
+
+func (r *jobRepository) GetJobs() ([]model.JobUser, error) {
+	query := `
+	SELECT
+		jobs.id, jobs.title, jobs.description, job_files.file, users.name AS username
+	FROM
+  	jobs
+	INNER JOIN
+  	users ON jobs.id_user = users.id
+	LEFT JOIN 
+  	job_files ON jobs.id = job_files.id_job
+	WHERE
+  	jobs.draft = 0
+	`
+
+	rows, err := r.db.Query(query)
+
+	if err != nil {
+		return []model.JobUser{}, err
+	}
+
+	jobs := []model.JobUser{}
+
+	for rows.Next() {
+		job := model.JobUser{}
+		rows.Scan(
+			&job.Id, &job.Title, &job.Description, &job.Image, &job.Username,
+		)
+		jobs = append(jobs, job)
+	}
+
+	return jobs, err
 }
